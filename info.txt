@@ -1,0 +1,17 @@
+composer require laravel/ui
+
+php artisan ui bootstrap
+
+npm install
+
+npm run dev
+
+
+sheetDB : 
+
+client ID = 283968231867-dotffrrns72rbb11mltsp9hsc24nalfq.apps.googleusercontent.com
+Client Secret ; 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
+Creation Date : 
+
+Google Sheet File ID : 1n2r0bYLL1_qUTYpCT9bQs7AB8bRfXIN8P4zaxUskqbs
+

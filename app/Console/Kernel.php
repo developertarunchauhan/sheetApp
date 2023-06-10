@@ -18,11 +18,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
-
-        $schedule->command('sheet:sync')->everyMinute();
-        // $schedule->call(function () {
-        //     info('OK');
-        // })->everyMinute();
+        $schedule->command('sheet:insert')->everyMinute();
+        $schedule->command('sheet:sync')->everyTenMinutes();
     }
 
     /**

@@ -37,41 +37,57 @@ class SheetController extends Controller
 
     public function sync()
     {
-
-
+        /**
+         * Recieving and storing all data to variable
+         */
+        //$data =  $this->sheetdb->get();
 
         /**
-         * Recieving and storing data to variable
+         * Get data based upon conditions
          */
-        $data =  $this->sheetdb->get();
 
+        $data = $this->sheetdb->search(['Imported' => 'No']);
         /**
-         * Looping througn the $data 
+         * Check if data is not empty
          */
-        foreach ($data as $value) {
+        if ($data) {
             /**
-             *  Converting $value from an 'stdObject' to 'Associative Array' to access data using keys
+             * Looping througn the $data 
              */
-            $v = (array)$value;
-            /**
-             * Saving data to Database 
-             */
-            $sheet = new Sheet();
-            $sheet->first_name = $v['First Name'];
-            $sheet->last_name = $v['Last Name'];
-            $sheet->phone = $v['Phone'];
-            $sheet->email = $v['Email'];
-            $sheet->company_name = $v['Company Name'];
-            $sheet->owner = $v['Owner'];
-            $sheet->employees = $v['Employees'];
-            $success = $sheet->save();
-            /**
-             * If data is successfully saved then delete row from google sheet
-             */
-            if ($success) {
-                $this->sheetdb->delete('First Name', $v['First Name']);
+            foreach ($data as $value) {
+                /**
+                 *  Converting $value from an 'stdObject' to 'Associative Array' to access data using keys
+                 */
+                $v = (array)$value;
+                /**
+                 * Saving data to Database 
+                 */
+                $sheet = new Sheet();
+                $sheet->first_name = $v['First Name'];
+                $sheet->last_name = $v['Last Name'];
+                $sheet->phone = $v['Phone'];
+                $sheet->email = $v['Email'];
+                $sheet->company_name = $v['Company Name'];
+                $sheet->owner = $v['Owner'];
+                $sheet->employees = $v['Employees'];
+                $success = $sheet->save();
+                /**
+                 * If data is successfully saved then delete row from google sheet
+                 */
+                if ($success) {
+                    /**
+                     * Delete after importing to DB : disabled
+                     */
+                    //$this->sheetdb->delete('First Name', $v['First Name']);
+                    /**
+                     * Update'Imported' column after data is imported to DB
+                     * WARNING : We need to have a unique colum in ID in sheet
+                     */
+                    $this->sheetdb->update('First Name', $v['First Name'], ['Imported' => 'Yes']);
+                }
             }
         }
+
 
         return redirect(route('sheet.index'));
 
@@ -94,8 +110,9 @@ class SheetController extends Controller
                 'Phone' => '8091334020',
                 'Email' => $faker->email(),
                 'Company Name' => $faker->word(),
-                'Owner' => (rand(1, 0)) ? 'Yes' : 'No',
-                'Employees' => '3-6'
+                'Owner' => (rand(0, 1)) ? 'Yes' : 'No',
+                'Employees' => '3-6',
+                'Imported' => 'No',
             ],
         ]);
         return redirect(route('sheet.index'));

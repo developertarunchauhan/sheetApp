@@ -9,10 +9,10 @@ class SheetdbController extends Controller
 {
     public function get()
     {
-        $sheetdb = new SheetDB('2zk8uiy2yhz4l', 'data_one');
+        $sheetdb = new SheetDB('iawu6fuo2bxng');
 
         $data =  $sheetdb->get();
 
-        dd($data);
+        return $data;
     }
 }

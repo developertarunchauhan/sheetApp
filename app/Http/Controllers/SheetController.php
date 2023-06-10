@@ -65,18 +65,14 @@ class SheetController extends Controller
             $sheet->owner = $v['Owner'];
             $sheet->employees = $v['Employees'];
             $success = $sheet->save();
-        }
-        /**
-         * If data is successfully saved then delete all rows from google sheet
-         */
-        if ($success) {
-            foreach ($data as $value) {
-                $v = (array)$value;
+            /**
+             * If data is successfully saved then delete row from google sheet
+             */
+            if ($success) {
                 $this->sheetdb->delete('First Name', $v['First Name']);
             }
-        } else {
-            return "Data no saved";
         }
+
         return redirect(route('sheet.index'));
 
         //return "DATA SAVED";
@@ -95,7 +91,7 @@ class SheetController extends Controller
                 'Date' => date('m/d/Y h:i:s a', time()),
                 'First Name' => $faker->firstName(),
                 'Last Name' => $faker->lastName,
-                'Phone' => $faker->phoneNumber(),
+                'Phone' => '8091334020',
                 'Email' => $faker->email(),
                 'Company Name' => $faker->word(),
                 'Owner' => (rand(1, 0)) ? 'Yes' : 'No',

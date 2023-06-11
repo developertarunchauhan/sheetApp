@@ -18,7 +18,6 @@ class SheetController extends Controller
         /**
          * Creating object of SheetDB and passing API key to it.
          * To generate API key to got sheetdb.io and generate a new key using google sheet URL.
-         * 
          */
         $this->sheetdb = new SheetDB('2zk8uiy2yhz4l');
     }
@@ -47,6 +46,9 @@ class SheetController extends Controller
          */
 
         $data = $this->sheetdb->search(['Imported' => 'No']);
+
+
+        $id_array = [];
         /**
          * Check if data is not empty
          */
@@ -75,23 +77,41 @@ class SheetController extends Controller
                  * If data is successfully saved then delete row from google sheet
                  */
                 if ($success) {
-                    /**
-                     * Delete after importing to DB : disabled
-                     */
-                    //$this->sheetdb->delete('First Name', $v['First Name']);
-                    /**
-                     * Update'Imported' column after data is imported to DB
-                     * WARNING : We need to have a unique colum in ID in sheet
-                     */
-                    $this->sheetdb->update('First Name', $v['First Name'], ['Imported' => 'Yes']);
+                    $id_array[] = $v['ID'];
+                }
+            }
+
+            if ($success) {
+                /**
+                 * Delete after importing to DB : disabled
+                 */
+                /**
+                 * Update'Imported' column after data is imported to DB
+                 * WARNING : We need to have a unique colum in ID in sheet
+                 */
+                /**
+                 * BATCH UPDATE WORKS ONLY ON PAID ACCOUNT 
+                 */
+                // $update_array_list = [];
+                // foreach ($id_array as $id) {
+                //     $update_array_list[] = [
+                //         'query' => 'ID=' . $id,
+                //         'Imported' => 'Yes',
+                //     ];
+                //     // $this->sheetdb->update('ID', $id, ['Imported' => 'Yes']);
+                // }
+                // echo "<pre>";
+                // print_r($update_array_list);
+                // echo "<pre>";
+                //$this->sheetdb->batchUpdate($update_array_list);
+                foreach ($id_array as $id) {
+                    $this->sheetdb->update('ID', $id, ['Imported' => 'Yes']);
                 }
             }
         }
 
 
         return redirect(route('sheet.index'));
-
-        //return "DATA SAVED";
     }
 
     /**
@@ -101,21 +121,39 @@ class SheetController extends Controller
     public function insert()
     {
         $faker = Faker::create();
-
-        $this->sheetdb->create([
-            [
+        $list = [];
+        for ($i = 0; $i < 5; $i++) {
+            $list[] = [
                 'Date' => date('m/d/Y h:i:s a', time()),
                 'First Name' => $faker->firstName(),
                 'Last Name' => $faker->lastName,
                 'Phone' => '8091334020',
                 'Email' => $faker->email(),
                 'Company Name' => $faker->word(),
-                'Owner' => (rand(0, 1)) ? 'Yes' : 'No',
+                'Owner' => 'Yes',
                 'Employees' => '3-6',
                 'Imported' => 'No',
-            ],
-        ]);
-        return redirect(route('sheet.index'));
+            ];
+
+            // $this->sheetdb->create([
+            //     [
+            //         'Date' => date('m/d/Y h:i:s a', time()),
+            //         'First Name' => $faker->firstName(),
+            //         'Last Name' => $faker->lastName,
+            //         'Phone' => '8091334020',
+            //         'Email' => $faker->email(),
+            //         'Company Name' => $faker->word(),
+            //         'Owner' => 'Yes',
+            //         'Employees' => '3-6',
+            //         'Imported' => 'No',
+            //     ]
+            // ]);
+        }
+        echo "<pre>";
+        print_r($list);
+        echo "</pre>";
+        $this->sheetdb->create($list);
+        //return redirect(route('sheet.index'));
     }
 
     /**
@@ -124,8 +162,7 @@ class SheetController extends Controller
 
     public function delete_from_sheet()
     {
-        $this->sheetdb->delete('First Name', 'Chris');
-        return redirect(route('sheet.index'));
+        return "DISABLED";
     }
 
     /**

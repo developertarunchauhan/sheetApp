@@ -23,8 +23,21 @@ Route::get('/', function () {
 Route::get('/googlesheet', [GooglesheetController::class, 'get'])->name('googlesheet.get');
 Route::get('/sheetdb', [SheetdbController::class, 'get'])->name('sheetdb.get');
 
-Route::resource('sheet', SheetController::class)->middleware('auth');
 
+/**
+ * Revolution Google Sheet Routes & Middleware
+ */
+
+Route::resource('googlesheet', GooglesheetController::class)->middleware('auth');
+Route::group(['prefix' => 'googlesheet'], function () {
+    Route::get('/sync/{sync}', [GooglesheetController::class, 'sync'])->name('googlesheet.sync');
+    Route::get('/insert/{insert}', [GooglesheetController::class, 'insert'])->name('googlesheet.insert');
+    Route::get('/delete_from_sheet/{delete}', [GooglesheetController::class, 'delete_from_sheet'])->name('googlesheet.delete_from_sheet');
+});
+/**
+ * SheetDB Routes & Middleware
+ */
+Route::resource('sheet', SheetController::class)->middleware('auth');
 Route::group(['prefix' => 'sheet'], function () {
     Route::get('/sync/{sync}', [SheetController::class, 'sync'])->name('sheet.sync');
     Route::get('/insert/{insert}', [SheetController::class, 'insert'])->name('sheet.insert');

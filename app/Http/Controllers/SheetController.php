@@ -54,16 +54,16 @@ class SheetController extends Controller
          */
         if ($data) {
             /**
-             * Looping througn the $data 
-             */
+             *  Looping througn the $data
+             * */
             foreach ($data as $value) {
                 /**
                  *  Converting $value from an 'stdObject' to 'Associative Array' to access data using keys
                  */
                 $v = (array)$value;
                 /**
-                 * Saving data to Database 
-                 */
+                 * Saving data to Database
+                 * */
                 $sheet = new Sheet();
                 $sheet->first_name = $v['First Name'];
                 $sheet->last_name = $v['Last Name'];
@@ -90,7 +90,7 @@ class SheetController extends Controller
                  * WARNING : We need to have a unique colum in ID in sheet
                  */
                 /**
-                 * BATCH UPDATE WORKS ONLY ON PAID ACCOUNT 
+                 *  BATCH UPDATE WORKS ONLY ON PAID ACCOUNT
                  */
                 // $update_array_list = [];
                 // foreach ($id_array as $id) {
@@ -134,26 +134,9 @@ class SheetController extends Controller
                 'Employees' => '3-6',
                 'Imported' => 'No',
             ];
-
-            // $this->sheetdb->create([
-            //     [
-            //         'Date' => date('m/d/Y h:i:s a', time()),
-            //         'First Name' => $faker->firstName(),
-            //         'Last Name' => $faker->lastName,
-            //         'Phone' => '8091334020',
-            //         'Email' => $faker->email(),
-            //         'Company Name' => $faker->word(),
-            //         'Owner' => 'Yes',
-            //         'Employees' => '3-6',
-            //         'Imported' => 'No',
-            //     ]
-            // ]);
         }
-        echo "<pre>";
-        print_r($list);
-        echo "</pre>";
         $this->sheetdb->create($list);
-        //return redirect(route('sheet.index'));
+        return redirect(route('sheet.index'));
     }
 
     /**
